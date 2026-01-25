@@ -6,7 +6,7 @@ import requests
 import json
 from datetime import datetime
 
-RAPIDAPI_KEY = "c5ac9d5e75msh0ad1714a2260ef0p12bea4jsn6b409a897083" 
+RAPIDAPI_KEY = st.secrets["RAPIDAPI_KEY"]
 
 if 'resume_analysis' not in st.session_state:
     st.session_state.resume_analysis = None
@@ -25,15 +25,12 @@ def analyze_resume(resume_text):
     """Analyze resume using Gemini API."""
     import google.generativeai as genai
     
-    # Configure the API
-    GEMINI_API_KEY = "AIzaSyBzMDJJ0wTuVxQUW3m5goFqQ-dtAFWdh6w"
+    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
     genai.configure(api_key=GEMINI_API_KEY)
     
-    # Initialize the model
     model = genai.GenerativeModel('models/gemini-2.0-flash')
     
     
-    # Define the prompt with explicit instructions to return JSON
     prompt = f"""You must respond with ONLY a valid JSON object, no other text.
     Analyze this resume and return a JSON object with exactly this structure:
     {{
@@ -49,16 +46,13 @@ def analyze_resume(resume_text):
     """
 
     try:
-        # Generate response
         response = model.generate_content(prompt)
         
         
         
         
-        # Clean the response text
         response_text = response.text.strip()
         
-        # Remove any markdown code block indicators if present
         if response_text.startswith("```json"):
             response_text = response_text[7:]
         if response_text.startswith("```"):
@@ -68,10 +62,6 @@ def analyze_resume(resume_text):
             
         response_text = response_text.strip()
         
-        # Debug: Print cleaned response
-        st.write("Cleaned Response:", response_text)
-        
-        # Parse JSON
         parsed_response = json.loads(response_text)
         return parsed_response
 
@@ -160,73 +150,85 @@ def display_job_card(job):
     st.markdown("""
     <style>
     .job-card {
-        background: #fdfdfd;  /* not pure white */
-        padding: 1.5rem;
-        border-radius: 12px;
-        margin: 1rem 0;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-        border: 1px solid #f0f0f0;
-}
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin: 1.5rem 0;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        border: 1px solid #e2e8f0;
+        transition: all 0.3s ease;
+    }
+    .job-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 35px rgba(0,0,0,0.15);
+    }
     .job-title {
         color: #2d3748;
-        font-size: 1.4rem;
-        font-weight: 600;
-        margin-bottom: 0.3rem;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
     .job-company {
         color: #4a5568;
-        font-size: 1.1rem;
-        margin-bottom: 0.3rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
     }
     .job-detail {
         color: #718096;
-        font-size: 0.95rem;
-        margin: 0.15rem 0;
+        font-size: 1rem;
+        margin: 0.3rem 0;
     }
     .salary-badge {
-        background: #edf2f7;
-        padding: 0.4rem 0.8rem;
-        border-radius: 20px;
+        background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        padding: 0.6rem 1.2rem;
+        border-radius: 25px;
         color: #2d3748;
-        font-weight: 500;
-        font-size: 0.9rem;
+        font-weight: 600;
+        font-size: 1rem;
         display: inline-block;
-        margin: 0.4rem 0;
+        margin: 0.5rem 0;
+        box-shadow: 0 4px 15px rgba(132, 250, 176, 0.3);
     }
     .apply-btn {
-        background: linear-gradient(90deg, #ff6b6b, #ff8e53);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white !important;
-        padding: 0.8rem 2rem;
-        border-radius: 25px;
+        padding: 1rem 2.5rem;
+        border-radius: 30px;
         text-decoration: none;
-        font-weight: bold;
+        font-weight: 700;
+        font-size: 1.1rem;
         display: inline-block;
-        margin-top: 1rem;
+        margin-top: 1.5rem;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
     }
     .apply-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 6px 16px rgba(255, 107, 107, 0.4);
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        color: white !important;
+        text-decoration: none;
     }
     .job-type {
-        background: #e6fffa;
-        color: #319795;
-        font-size: 0.85rem;
-        font-weight: 500;
-        padding: 0.2rem 0.6rem;
-        border-radius: 12px;
+        background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        color: #d69e2e;
+        font-size: 0.9rem;
+        font-weight: 600;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
         display: inline-block;
-        margin-top: 0.3rem;
+        margin-top: 0.5rem;
+        box-shadow: 0 2px 8px rgba(252, 182, 159, 0.3);
     }
     </style>
     """, unsafe_allow_html=True)
 
     with st.container():
-        # Main card wrapper
         st.markdown('<div class="job-card">', unsafe_allow_html=True)
 
-        # Top section
         col1, col2 = st.columns([3, 1])
         with col1:
             st.markdown(f'<div class="job-title">{job["job_title"]}</div>', unsafe_allow_html=True)
@@ -249,7 +251,6 @@ def display_job_card(job):
                 date_text = "Today" if days_ago == 0 else ("Yesterday" if days_ago == 1 else f"{days_ago} days ago")
                 st.markdown(f'<div class="job-detail">🕒 {date_text}</div>', unsafe_allow_html=True)
 
-        # Description in expander
         with st.expander("📋 View Job Description & Details"):
             st.markdown(job.get("job_description", "No description available"))
 
@@ -264,7 +265,6 @@ def display_job_card(job):
                     for benefit in job["job_highlights"]["Benefits"]:
                         st.markdown(f"- {benefit}")
 
-        # Apply button center aligned
         if job.get("job_apply_link"):
             st.markdown(f"""
             <div style="text-align: center;">
@@ -274,64 +274,256 @@ def display_job_card(job):
 
         st.markdown('</div>', unsafe_allow_html=True)
 def main():
-    st.title("🎯 RecruitifyAI")
-    st.write("Upload your resume and let AI find the perfect job matches for you!")
+    st.markdown("""
+    <style>
+    /* Main app styling */
+    .main .block-container {
+        padding-top: 2rem;
+        padding-bottom: 2rem;
+        max-width: 1200px;
+    }
+    
+    /* Remove default streamlit styling */
+    .stApp > header {
+        background-color: transparent;
+    }
+    
+    .stApp {
+        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        min-height: 100vh;
+    }
+    
+    /* Header styling */
+    .main-header {
+        background: white;
+        padding: 2rem;
+        border-radius: 20px;
+        margin-bottom: 2rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        text-align: center;
+        border: 1px solid #e2e8f0;
+    }
+    
+    .main-title {
+        font-size: 3rem;
+        font-weight: 700;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        margin-bottom: 0.5rem;
+    }
+    
+    .main-subtitle {
+        font-size: 1.2rem;
+        color: #6b7280;
+        margin-bottom: 0;
+    }
+    
+    /* Content sections */
+    .content-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 15px;
+        margin: 1.5rem 0;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        border: 1px solid #e2e8f0;
+    }
+    
+    /* Upload section */
+    .upload-section {
+        background: white;
+        color: #2d3748;
+        padding: 2rem;
+        border-radius: 15px;
+        margin: 1.5rem 0;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        border: 1px solid #e2e8f0;
+    }
+    
+    /* Resume analysis styling */
+    .resume-section {
+        background: white;
+        color: #2d3748;
+        padding: 2rem;
+        border-radius: 15px;
+        margin: 1.5rem 0;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        border: 1px solid #e2e8f0;
+    }
+    
+    .resume-card {
+        background: #f8fafc;
+        padding: 1.5rem;
+        border-radius: 12px;
+        margin: 1rem 0;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    
+    /* Job search section */
+    .job-search-section {
+        background: white;
+        color: #2d3748;
+        padding: 2rem;
+        border-radius: 15px;
+        margin: 1.5rem 0;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        border: 1px solid #e2e8f0;
+    }
+    
+    /* Button styling */
+    .stButton > button {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        padding: 0.75rem 2rem;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+    }
+    
+    .stButton > button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+    }
+    
+    /* File uploader styling */
+    .stFileUploader > div > div {
+        background: rgba(255, 255, 255, 0.9);
+        border: 2px dashed #667eea;
+        border-radius: 15px;
+        padding: 2rem;
+    }
+    
+    /* Input styling */
+    .stTextInput > div > div > input {
+        border-radius: 10px;
+        border: 2px solid #e5e7eb;
+        padding: 0.75rem;
+        font-size: 1rem;
+    }
+    
+    .stSelectbox > div > div > select {
+        border-radius: 10px;
+        border: 2px solid #e5e7eb;
+        padding: 0.75rem;
+    }
+    
+    /* Success/Error messages */
+    .stSuccess {
+        background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        border-radius: 10px;
+        padding: 1rem;
+    }
+    
+    .stError {
+        background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+        border-radius: 10px;
+        padding: 1rem;
+    }
+    
+    .stWarning {
+        background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        border-radius: 10px;
+        padding: 1rem;
+    }
+    
+    /* Hide streamlit branding */
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    
+    /* Responsive design */
+    @media (max-width: 768px) {
+        .main-title {
+            font-size: 2rem;
+        }
+        .content-section {
+            padding: 1rem;
+        }
+    }
+    </style>
+    """, unsafe_allow_html=True)
 
-    # File upload
-    uploaded_file = st.file_uploader("Upload your resume (PDF)", type="pdf")
+    st.markdown("""
+    <div class="main-header">
+        <h1 class="main-title">🎯 RecruitifyAI</h1>
+        <p class="main-subtitle">Upload your resume and let AI find the perfect job matches for you!</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-    # Location filter
-    location = st.text_input("Enter location (optional)", "")
+    st.markdown('<div class="upload-section">', unsafe_allow_html=True)
+    st.markdown("### 📄 Upload Your Resume")
+    st.markdown("Upload your PDF resume to get started with AI-powered job matching")
+    uploaded_file = st.file_uploader("Choose your resume file", type="pdf", label_visibility="collapsed")
+    
+    st.markdown("### 📍 Location Preference")
+    location = st.text_input("Enter your preferred job location (optional)", "", placeholder="e.g., New York, NY or Remote")
+    st.markdown('</div>', unsafe_allow_html=True)
 
     if uploaded_file:
         with st.spinner("📑 Analyzing your resume..."):
-            # Extract text and analyze only once
             resume_text = extract_text_from_pdf(uploaded_file)
             if not st.session_state.resume_analysis:
                 st.session_state.resume_analysis = analyze_resume(resume_text)
 
-            st.markdown("## 📄 Resume Summary", unsafe_allow_html=True)
-
-            # Two column layout for Resume Insights
+            st.markdown('<div class="resume-section">', unsafe_allow_html=True)
+            st.markdown("## 📄 Resume Analysis Results")
+            st.markdown("Here's what our AI discovered about your professional profile:")
+            
             col1, col2 = st.columns(2)
 
             with col1:
-                st.markdown("### 🧑‍💼 Profile")
-                st.markdown(f"- **Primary Role:** {st.session_state.resume_analysis['Primary job role']}")
-                st.markdown(f"- **Years of Experience:** {st.session_state.resume_analysis['Years of experience']}")
-
-                st.markdown("### 🛠️ Key Skills")
+                st.markdown('<div class="resume-card">', unsafe_allow_html=True)
+                st.markdown("### 🧑‍💼 Professional Profile")
+                st.markdown(f"**Primary Role:** {st.session_state.resume_analysis['Primary job role']}")
+                st.markdown(f"**Experience Level:** {st.session_state.resume_analysis['Years of experience']}")
+                st.markdown('</div>', unsafe_allow_html=True)
+                
+                st.markdown('<div class="resume-card">', unsafe_allow_html=True)
+                st.markdown("### 🛠️ Core Skills")
                 skills = st.session_state.resume_analysis.get("Key skills", [])
                 if skills:
-                    st.markdown(
-                        "<ul style='margin-top:0;'>"
-                        + "".join([f"<li>{skill}</li>" for skill in skills])
-                        + "</ul>",
-                        unsafe_allow_html=True,
-                    )
+                    for skill in skills[:6]:  # Limit to top 6 skills
+                        st.markdown(f"• {skill}")
+                    if len(skills) > 6:
+                        st.markdown(f"*...and {len(skills) - 6} more skills*")
                 else:
-                    st.info("No key skills extracted.")
+                    st.markdown("*No key skills extracted*")
+                st.markdown('</div>', unsafe_allow_html=True)
 
             with col2:
+                st.markdown('<div class="resume-card">', unsafe_allow_html=True)
                 st.markdown("### 🏆 Key Achievements")
                 achievements = st.session_state.resume_analysis.get("Key achievements", [])
                 if achievements:
-                    st.markdown(
-                        "<ul style='margin-top:0;'>"
-                        + "".join([f"<li>{achievement}</li>" for achievement in achievements])
-                        + "</ul>",
-                        unsafe_allow_html=True,
-                    )
+                    for achievement in achievements[:4]:  # Limit to top 4 achievements
+                        st.markdown(f"• {achievement}")
+                    if len(achievements) > 4:
+                        st.markdown(f"*...and {len(achievements) - 4} more achievements*")
                 else:
-                    st.info("No achievements found.")
+                    st.markdown("*No achievements found*")
+                st.markdown('</div>', unsafe_allow_html=True)
+                
+                st.markdown('<div class="resume-card">', unsafe_allow_html=True)
+                st.markdown("### 🎯 Recommended Job Titles")
+                job_titles = st.session_state.resume_analysis.get("Preferred job titles", [])
+                if job_titles:
+                    for title in job_titles[:4]:  # Limit to top 4 titles
+                        st.markdown(f"• {title}")
+                else:
+                    st.markdown("*Based on your primary role*")
+                st.markdown('</div>', unsafe_allow_html=True)
+            
+            st.markdown('</div>', unsafe_allow_html=True)
 
-            # Divider
-            st.markdown("---")
+            st.markdown('<div class="job-search-section">', unsafe_allow_html=True)
+            st.markdown("## 🔍 Find Your Perfect Job Match")
+            st.markdown("Customize your job search with the filters below:")
 
-            # Job search section
-            st.markdown("## 🔍 Job Matches")
-
-            # Filter options
             col1, col2 = st.columns(2)
             with col1:
                 employment_type = st.selectbox(
@@ -343,8 +535,14 @@ def main():
                     "📅 Date Posted",
                     ["All", "Today", "3 days", "Week", "Month"]
                 )
+            
+            col1, col2, col3 = st.columns([1, 2, 1])
+            with col2:
+                search_clicked = st.button("🚀 Find Matching Jobs", use_container_width=True)
+            
+            st.markdown('</div>', unsafe_allow_html=True)
 
-            if st.button("🚀 Find Matching Jobs"):
+            if search_clicked:
                 with st.spinner("🔎 Searching for jobs..."):
                     jobs_response = fetch_jobs_rapidapi(
                         st.session_state.resume_analysis['Primary job role'],
@@ -354,7 +552,6 @@ def main():
                     if jobs_response and 'data' in jobs_response:
                         jobs = jobs_response['data']
 
-                        # Apply employment filter
                         if employment_type != "All":
                             jobs = [
                                 job for job in jobs
@@ -362,32 +559,55 @@ def main():
                             ]
 
                         if jobs:
+                            st.markdown('<div class="content-section">', unsafe_allow_html=True)
                             st.success(f"✅ Found {len(jobs)} matching jobs")
 
-                            # Display job cards
                             for job in jobs:
                                 display_job_card(job)
 
-                            # Pagination (load more)
-                            if len(jobs) >= 10:
-                                col1, col2, col3 = st.columns([1, 2, 1])
-                                with col2:
-                                    if st.button("⬇️ Load More Jobs"):
-                                        current_page = len(jobs) // 10 + 1
-                                        more_jobs = fetch_jobs_rapidapi(
-                                            st.session_state.resume_analysis['Primary job role'],
-                                            location,
-                                            page=current_page
-                                        )
-                                        if more_jobs.get("data"):
-                                            jobs.extend(more_jobs["data"])
-                                            for job in more_jobs["data"]:
-                                                display_job_card(job)
+                            # # Pagination (load more)
+                            # if len(jobs) >= 10:
+                            #     col1, col2, col3 = st.columns([1, 2, 1])
+                            #     with col2:
+                            #         if st.button("⬇️ Load More Jobs"):
+                            #             current_page = len(jobs) // 10 + 1
+                            #             more_jobs = fetch_jobs_rapidapi(
+                            #                 st.session_state.resume_analysis['Primary job role'],
+                            #                 location,
+                            #                 page=current_page
+                            #             )
+                            #             if more_jobs.get("data"):
+                            #                 jobs.extend(more_jobs["data"])
+                            #                 for job in more_jobs["data"]:
+                            #                     display_job_card(job)
+                            
+                            st.markdown('</div>', unsafe_allow_html=True)
                         else:
-                            st.warning("⚠️ No jobs found matching your filters.")
+                            st.markdown('<div class="content-section">', unsafe_allow_html=True)
+                            st.warning("⚠️ No jobs found matching your filters. Try adjusting your search criteria.")
+                            st.markdown('</div>', unsafe_allow_html=True)
                     else:
-                        st.error("❌ Unable to find jobs. Please try again later.")
+                        st.markdown('<div class="content-section">', unsafe_allow_html=True)
+                        st.error("❌ Unable to find jobs. Please check your internet connection and try again.")
+                        st.markdown('</div>', unsafe_allow_html=True)
 
+    # Footer
+    st.markdown("""
+    <div style="
+        margin-top: 3rem;
+        padding: 2rem;
+        background: white;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        border: 1px solid #e2e8f0;
+        color: #6b7280;
+    ">
+        <p style="margin: 0; font-size: 1rem;">
+            🎆 Powered by AI • Built with ❤️ for Job Seekers • 🚀 RecruitifyAI 2024
+        </p>
+    </div>
+    """, unsafe_allow_html=True)
     
 if __name__ == "__main__":
     main()

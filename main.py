@@ -163,11 +163,11 @@ def display_job_card(job):
         box-shadow: 0 12px 35px rgba(0,0,0,0.15);
     }
     .job-title {
-        color: #2d3748;
+        color: #1e293b;
         font-size: 1.5rem;
         font-weight: 700;
         margin-bottom: 0.5rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
     }
@@ -183,18 +183,18 @@ def display_job_card(job):
         margin: 0.3rem 0;
     }
     .salary-badge {
-        background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         padding: 0.6rem 1.2rem;
         border-radius: 25px;
-        color: #2d3748;
+        color: white;
         font-weight: 600;
         font-size: 1rem;
         display: inline-block;
         margin: 0.5rem 0;
-        box-shadow: 0 4px 15px rgba(132, 250, 176, 0.3);
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
     }
     .apply-btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
         color: white !important;
         padding: 1rem 2.5rem;
         border-radius: 30px;
@@ -204,24 +204,24 @@ def display_job_card(job):
         display: inline-block;
         margin-top: 1.5rem;
         transition: all 0.3s ease;
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 6px 20px rgba(79, 70, 229, 0.4);
     }
     .apply-btn:hover {
         transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        box-shadow: 0 8px 25px rgba(79, 70, 229, 0.6);
         color: white !important;
         text-decoration: none;
     }
     .job-type {
-        background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-        color: #d69e2e;
+        background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        color: white;
         font-size: 0.9rem;
         font-weight: 600;
         padding: 0.4rem 1rem;
         border-radius: 20px;
         display: inline-block;
         margin-top: 0.5rem;
-        box-shadow: 0 2px 8px rgba(252, 182, 159, 0.3);
+        box-shadow: 0 2px 8px rgba(251, 191, 36, 0.3);
     }
     </style>
     """, unsafe_allow_html=True)
@@ -289,33 +289,32 @@ def main():
     }
     
     .stApp {
-        background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        background: #f7f9fc;
         min-height: 100vh;
     }
     
     /* Header styling */
     .main-header {
-        background: white;
-        padding: 2rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2.5rem;
         border-radius: 20px;
         margin-bottom: 2rem;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        box-shadow: 0 10px 40px rgba(102, 126, 234, 0.3);
         text-align: center;
-        border: 1px solid #e2e8f0;
+        border: none;
     }
     
     .main-title {
         font-size: 3rem;
         font-weight: 700;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
+        color: white;
         margin-bottom: 0.5rem;
+        text-shadow: 0 2px 10px rgba(0,0,0,0.2);
     }
     
     .main-subtitle {
         font-size: 1.2rem;
-        color: #6b7280;
+        color: rgba(255, 255, 255, 0.95);
         margin-bottom: 0;
     }
     
@@ -353,12 +352,39 @@ def main():
     }
     
     .resume-card {
-        background: #f8fafc;
-        padding: 1.5rem;
+        background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+        padding: 1.8rem;
         border-radius: 12px;
         margin: 1rem 0;
-        border: 1px solid #e2e8f0;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        border: 1px solid #d1d9f0;
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.08);
+        transition: all 0.3s ease;
+    }
+    
+    .resume-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.15);
+    }
+    
+    /* Section headings */
+    .resume-section h2 {
+        color: #1e293b;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+    }
+    
+    .resume-section h3 {
+        color: #4f46e5;
+        font-weight: 600;
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+    }
+    
+    .resume-card h3 {
+        color: #4f46e5;
+        font-weight: 600;
+        font-size: 1.1rem;
+        margin-bottom: 0.8rem;
     }
     
     /* Job search section */
@@ -374,7 +400,7 @@ def main():
     
     /* Button styling */
     .stButton > button {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
         color: white;
         border: none;
         padding: 0.75rem 2rem;
@@ -382,20 +408,26 @@ def main():
         font-weight: 600;
         font-size: 1rem;
         transition: all 0.3s ease;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
     }
     
     .stButton > button:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        box-shadow: 0 6px 20px rgba(79, 70, 229, 0.6);
     }
     
     /* File uploader styling */
     .stFileUploader > div > div {
-        background: rgba(255, 255, 255, 0.9);
-        border: 2px dashed #667eea;
+        background: white;
+        border: 2px dashed #4f46e5;
         border-radius: 15px;
         padding: 2rem;
+        transition: all 0.3s ease;
+    }
+    
+    .stFileUploader > div > div:hover {
+        border-color: #7c3aed;
+        background: #f8f9ff;
     }
     
     /* Input styling */
@@ -404,19 +436,32 @@ def main():
         border: 2px solid #e5e7eb;
         padding: 0.75rem;
         font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .stTextInput > div > div > input:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
     }
     
     .stSelectbox > div > div > select {
         border-radius: 10px;
         border: 2px solid #e5e7eb;
         padding: 0.75rem;
+        transition: all 0.3s ease;
+    }
+    
+    .stSelectbox > div > div > select:focus {
+        border-color: #4f46e5;
+        box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
     }
     
     /* Success/Error messages */
     .stSuccess {
-        background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+        background: linear-gradient(135deg, #10b981 0%, #059669 100%);
         border-radius: 10px;
         padding: 1rem;
+        color: white;
     }
     
     .stError {
@@ -435,6 +480,14 @@ def main():
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
+    
+    /* Expander styling */
+    .streamlit-expanderHeader {
+        background: #f8f9ff;
+        border-radius: 10px;
+        font-weight: 600;
+        color: #4f46e5;
+    }
     
     /* Responsive design */
     @media (max-width: 768px) {
@@ -475,7 +528,7 @@ def main():
             st.markdown("Here's what our AI discovered about your professional profile:")
             
             col1, col2 = st.columns(2)
-
+            
             with col1:
                 st.markdown('<div class="resume-card">', unsafe_allow_html=True)
                 st.markdown("### 🧑‍💼 Professional Profile")

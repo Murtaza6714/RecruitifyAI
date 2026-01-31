@@ -12,6 +12,10 @@ if 'resume_analysis' not in st.session_state:
     st.session_state.resume_analysis = None
 if 'jobs' not in st.session_state:
     st.session_state.jobs = None
+if 'current_page' not in st.session_state:
+    st.session_state.current_page = 1
+if 'all_jobs' not in st.session_state:
+    st.session_state.all_jobs = []
 
 def extract_text_from_pdf(pdf_file):
     """Extract text from uploaded PDF file"""
@@ -177,6 +181,26 @@ def display_job_card(job):
         font-weight: 600;
         margin-bottom: 0.5rem;
     }
+    .employer-logo {
+        width: 60px;
+        height: 60px;
+        object-fit: contain;
+        border-radius: 10px;
+        background: white;
+        padding: 5px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .employer-website {
+        color: #4f46e5;
+        text-decoration: none;
+        font-size: 0.9rem;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+    .employer-website:hover {
+        color: #7c3aed;
+        text-decoration: underline;
+    }
     .job-detail {
         color: #718096;
         font-size: 1rem;
@@ -227,12 +251,20 @@ def display_job_card(job):
     """, unsafe_allow_html=True)
 
     with st.container():
-        st.markdown('<div class="job-card">', unsafe_allow_html=True)
+        # st.markdown('<div class="job-card">', unsafe_allow_html=True)
 
         col1, col2 = st.columns([3, 1])
         with col1:
             st.markdown(f'<div class="job-title">{job["job_title"]}</div>', unsafe_allow_html=True)
-            st.markdown(f'<div class="job-company">🏢 {job["employer_name"]}</div>', unsafe_allow_html=True)
+            
+            company_col1, company_col2 = st.columns([0.15, 0.85])
+            with company_col1:
+                if job.get("employer_logo"):
+                    st.markdown(f'<img src="{job["employer_logo"]}" class="employer-logo" alt="Company Logo">', unsafe_allow_html=True)
+            with company_col2:
+                st.markdown(f'<div class="job-company">🏢 {job["employer_name"]}</div>', unsafe_allow_html=True)
+                if job.get("employer_website"):
+                    st.markdown(f'<a href="{job["employer_website"]}" target="_blank" class="employer-website">🌐 Visit Company Website</a>', unsafe_allow_html=True)
             
             location_str = f"{job.get('job_city', '')}, {job.get('job_country', '')}"
             if location_str.strip(', '):
@@ -252,6 +284,13 @@ def display_job_card(job):
                 st.markdown(f'<div class="job-detail">🕒 {date_text}</div>', unsafe_allow_html=True)
 
         with st.expander("📋 View Job Description & Details"):
+            if job.get("employer_logo"):
+                st.image(job["employer_logo"], width=100)
+            
+            if job.get("employer_website"):
+                st.markdown(f"**Company Website:** [{job['employer_website']}]({job['employer_website']})")
+            
+            st.markdown("---")
             st.markdown(job.get("job_description", "No description available"))
 
             if job.get("job_highlights"):
@@ -508,14 +547,14 @@ def main():
     </div>
     """, unsafe_allow_html=True)
 
-    st.markdown('<div class="upload-section">', unsafe_allow_html=True)
+    # st.markdown('<div class="upload-section">', unsafe_allow_html=True)
     st.markdown("### 📄 Upload Your Resume")
     st.markdown("Upload your PDF resume to get started with AI-powered job matching")
     uploaded_file = st.file_uploader("Choose your resume file", type="pdf", label_visibility="collapsed")
     
     st.markdown("### 📍 Location Preference")
     location = st.text_input("Enter your preferred job location (optional)", "", placeholder="e.g., New York, NY or Remote")
-    st.markdown('</div>', unsafe_allow_html=True)
+    # st.markdown('</div>', unsafe_allow_html=True)
 
     if uploaded_file:
         with st.spinner("📑 Analyzing your resume..."):
@@ -530,13 +569,13 @@ def main():
             col1, col2 = st.columns(2)
             
             with col1:
-                st.markdown('<div class="resume-card">', unsafe_allow_html=True)
+                # st.markdown('<div class="resume-card">', unsafe_allow_html=True)
                 st.markdown("### 🧑‍💼 Professional Profile")
                 st.markdown(f"**Primary Role:** {st.session_state.resume_analysis['Primary job role']}")
                 st.markdown(f"**Experience Level:** {st.session_state.resume_analysis['Years of experience']}")
-                st.markdown('</div>', unsafe_allow_html=True)
+                # st.markdown('</div>', unsafe_allow_html=True)
                 
-                st.markdown('<div class="resume-card">', unsafe_allow_html=True)
+                # st.markdown('<div class="resume-card">', unsafe_allow_html=True)
                 st.markdown("### 🛠️ Core Skills")
                 skills = st.session_state.resume_analysis.get("Key skills", [])
                 if skills:
@@ -546,10 +585,10 @@ def main():
                         st.markdown(f"*...and {len(skills) - 6} more skills*")
                 else:
                     st.markdown("*No key skills extracted*")
-                st.markdown('</div>', unsafe_allow_html=True)
+                # st.markdown('</div>', unsafe_allow_html=True)
 
             with col2:
-                st.markdown('<div class="resume-card">', unsafe_allow_html=True)
+                # st.markdown('<div class="resume-card">', unsafe_allow_html=True)
                 st.markdown("### 🏆 Key Achievements")
                 achievements = st.session_state.resume_analysis.get("Key achievements", [])
                 if achievements:
@@ -559,9 +598,9 @@ def main():
                         st.markdown(f"*...and {len(achievements) - 4} more achievements*")
                 else:
                     st.markdown("*No achievements found*")
-                st.markdown('</div>', unsafe_allow_html=True)
+                # st.markdown('</div>', unsafe_allow_html=True)
                 
-                st.markdown('<div class="resume-card">', unsafe_allow_html=True)
+                # st.markdown('<div class="resume-card">', unsafe_allow_html=True)
                 st.markdown("### 🎯 Recommended Job Titles")
                 job_titles = st.session_state.resume_analysis.get("Preferred job titles", [])
                 if job_titles:
@@ -569,11 +608,11 @@ def main():
                         st.markdown(f"• {title}")
                 else:
                     st.markdown("*Based on your primary role*")
-                st.markdown('</div>', unsafe_allow_html=True)
+                # st.markdown('</div>', unsafe_allow_html=True)
             
-            st.markdown('</div>', unsafe_allow_html=True)
+            # st.markdown('</div>', unsafe_allow_html=True)
 
-            st.markdown('<div class="job-search-section">', unsafe_allow_html=True)
+            # st.markdown('<div class="job-search-section">', unsafe_allow_html=True)
             st.markdown("## 🔍 Find Your Perfect Job Match")
             st.markdown("Customize your job search with the filters below:")
 
@@ -593,56 +632,74 @@ def main():
             with col2:
                 search_clicked = st.button("🚀 Find Matching Jobs", use_container_width=True)
             
-            st.markdown('</div>', unsafe_allow_html=True)
+            # st.markdown('</div>', unsafe_allow_html=True)
 
             if search_clicked:
+                st.session_state.current_page = 1
+                st.session_state.all_jobs = []
+                st.session_state.employment_type_filter = employment_type
+                st.session_state.location_filter = location
+                st.session_state.search_initiated = True
+
+            if st.session_state.get('search_initiated', False):
                 with st.spinner("🔎 Searching for jobs..."):
                     jobs_response = fetch_jobs_rapidapi(
                         st.session_state.resume_analysis['Primary job role'],
-                        location
+                        st.session_state.get('location_filter', location),
+                        page=st.session_state.current_page
                     )
 
                     if jobs_response and 'data' in jobs_response:
                         jobs = jobs_response['data']
-
-                        if employment_type != "All":
+                        
+                        employment_type_filter = st.session_state.get('employment_type_filter', 'All')
+                        if employment_type_filter != "All":
                             jobs = [
                                 job for job in jobs
-                                if job.get('job_employment_type', '').upper() == employment_type
+                                if employment_type_filter in job.get('job_employment_types', [])
                             ]
 
                         if jobs:
-                            st.markdown('<div class="content-section">', unsafe_allow_html=True)
-                            st.success(f"✅ Found {len(jobs)} matching jobs")
-
-                            for job in jobs:
+                            st.success(f"✅ Found {len(jobs)} matching jobs on page {st.session_state.current_page}")
+                            
+                            JOBS_PER_PAGE = 10
+                            for job in jobs[:JOBS_PER_PAGE]:
                                 display_job_card(job)
 
-                            # # Pagination (load more)
-                            # if len(jobs) >= 10:
-                            #     col1, col2, col3 = st.columns([1, 2, 1])
-                            #     with col2:
-                            #         if st.button("⬇️ Load More Jobs"):
-                            #             current_page = len(jobs) // 10 + 1
-                            #             more_jobs = fetch_jobs_rapidapi(
-                            #                 st.session_state.resume_analysis['Primary job role'],
-                            #                 location,
-                            #                 page=current_page
-                            #             )
-                            #             if more_jobs.get("data"):
-                            #                 jobs.extend(more_jobs["data"])
-                            #                 for job in more_jobs["data"]:
-                            #                     display_job_card(job)
+                            st.markdown("---")
                             
-                            st.markdown('</div>', unsafe_allow_html=True)
+                            pagination_col1, pagination_col2, pagination_col3, pagination_col4, pagination_col5 = st.columns([1, 1, 1, 1, 1])
+                            
+                            with pagination_col1:
+                                if st.session_state.current_page > 1:
+                                    if st.button("⏮️ First", use_container_width=True):
+                                        st.session_state.current_page = 1
+                                        st.rerun()
+                            
+                            with pagination_col2:
+                                if st.session_state.current_page > 1:
+                                    if st.button("◀️ Previous", use_container_width=True):
+                                        st.session_state.current_page -= 1
+                                        st.rerun()
+                            
+                            with pagination_col3:
+                                st.markdown(f"<div style='text-align: center; padding: 0.5rem; font-weight: 600; color: #4f46e5;'>Page {st.session_state.current_page}</div>", unsafe_allow_html=True)
+                            
+                            with pagination_col4:
+                                if len(jobs) >= JOBS_PER_PAGE:
+                                    if st.button("Next ▶️", use_container_width=True):
+                                        st.session_state.current_page += 1
+                                        st.rerun()
+                            
+                            with pagination_col5:
+                                if len(jobs) >= JOBS_PER_PAGE:
+                                    if st.button("Last ⏭️", use_container_width=True):
+                                        st.session_state.current_page += 5
+                                        st.rerun()
                         else:
-                            st.markdown('<div class="content-section">', unsafe_allow_html=True)
                             st.warning("⚠️ No jobs found matching your filters. Try adjusting your search criteria.")
-                            st.markdown('</div>', unsafe_allow_html=True)
                     else:
-                        st.markdown('<div class="content-section">', unsafe_allow_html=True)
                         st.error("❌ Unable to find jobs. Please check your internet connection and try again.")
-                        st.markdown('</div>', unsafe_allow_html=True)
 
     # Footer
     st.markdown("""

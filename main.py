@@ -78,7 +78,7 @@ def analyze_resume(resume_text):
         return {}
 
 
-def fetch_jobs_rapidapi(job_title, location=None, page=1):
+def fetch_jobs_rapidapi(job_title, location=None, page=1, date_posted=None, work_from_home=None):
     """Fetch jobs using RapidAPI JSearch"""
     url = "https://jsearch.p.rapidapi.com/search"
 
@@ -96,6 +96,18 @@ def fetch_jobs_rapidapi(job_title, location=None, page=1):
         "page": str(page),
         "num_pages": "1"
     }
+    
+    if date_posted and date_posted != "All":
+        date_mapping = {
+            "Today": "today",
+            "3 days": "3days",
+            "Week": "week",
+            "Month": "month"
+        }
+        params["date_posted"] = date_mapping.get(date_posted, date_posted)
+    
+    if work_from_home is not None:
+        params["remote"] = "true" if work_from_home else "false"
 
     try:
         response = requests.get(url, headers=headers, params=params)
@@ -628,6 +640,15 @@ def main():
                     ["All", "Today", "3 days", "Week", "Month"]
                 )
             
+            col1, col2 = st.columns(2)
+            with col1:
+                work_from_home_option = st.selectbox(
+                    "🏠 Work From Home",
+                    ["No preference", "Yes", "No"]
+                )
+            with col2:
+                st.empty()
+            
             col1, col2, col3 = st.columns([1, 2, 1])
             with col2:
                 search_clicked = st.button("🚀 Find Matching Jobs", use_container_width=True)
@@ -639,6 +660,9 @@ def main():
                 st.session_state.all_jobs = []
                 st.session_state.employment_type_filter = employment_type
                 st.session_state.location_filter = location
+                st.session_state.date_posted_filter = date_posted
+                work_from_home_value = None if work_from_home_option == "No preference" else (work_from_home_option == "Yes")
+                st.session_state.work_from_home_filter = work_from_home_value
                 st.session_state.search_initiated = True
 
             if st.session_state.get('search_initiated', False):
@@ -646,7 +670,9 @@ def main():
                     jobs_response = fetch_jobs_rapidapi(
                         st.session_state.resume_analysis['Primary job role'],
                         st.session_state.get('location_filter', location),
-                        page=st.session_state.current_page
+                        page=st.session_state.current_page,
+                        date_posted=st.session_state.get('date_posted_filter'),
+                        work_from_home=st.session_state.get('work_from_home_filter')
                     )
 
                     if jobs_response and 'data' in jobs_response:

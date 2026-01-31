@@ -740,7 +740,7 @@ def main():
         color: #6b7280;
     ">
         <p style="margin: 0; font-size: 1rem;">
-            🎆 Powered by AI • Built with ❤️ for Job Seekers • 🚀 RecruitifyAI 2024
+            🎆 Powered by AI • Built with ❤️ for Job Seekers • 🚀 RecruitifyAI 2026
         </p>
     </div>
     """, unsafe_allow_html=True)

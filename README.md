@@ -93,6 +93,50 @@ pytest test_apis.py --cov=main --cov-report=html --cov-report=term
 
 ---
 
+## Running with Docker
+
+### Prerequisites
+
+- [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/) installed
+
+### Setup
+
+1. Ensure your `.env` file contains your API keys:
+
+   ```env
+   GEMINI_API_KEY=your_gemini_api_key_here
+   RAPIDAPI_KEY=your_rapidapi_key_here
+   ```
+
+2. Ensure `.streamlit/secrets.toml` exists with the same keys (required by Streamlit):
+
+   ```toml
+   GEMINI_API_KEY = "your_gemini_api_key_here"
+   RAPIDAPI_KEY  = "your_rapidapi_key_here"
+   ```
+
+### Build and start
+
+```bash
+docker compose up --build
+```
+
+The app will be available at `http://localhost:8501`.
+
+### Stop the container
+
+```bash
+docker compose down
+```
+
+### Run in detached mode
+
+```bash
+docker compose up --build -d
+```
+
+---
+
 ## Project Structure
 
 ```
@@ -103,6 +147,8 @@ RecruitifyAI/
 ├── test_apis.py         # API and integration tests
 ├── test_utils.py        # Utility/unit tests
 ├── run_tests.py         # Test runner helper script
+├── Dockerfile           # Docker image definition
+├── docker-compose.yml   # Docker Compose configuration
 └── .streamlit/
     └── secrets.toml     # API keys (not committed to version control)
 ```
